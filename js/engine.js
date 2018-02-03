@@ -64,6 +64,10 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
+        if (checkCollisions())
+          {
+              reset();
+              return;}
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -97,13 +101,12 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        if (checkCollisions())
-           reset();
+       
     }
 
     function  checkCollisions() {
         for(var i=0; i<Game.allEnemies.length; i++) {
-            if (Math.abs(Game.player.x-Game.allEnemies[i].x)<0.9 && Math.abs(Game.player.y-Game.allEnemies[i].y)<0.9){
+            if (Math.abs(Game.player.x-Game.allEnemies[i].x)<0.5 && Math.abs(Game.player.y-Game.allEnemies[i].y)<0.5){
                 //console.log("Game.player: ", Game.player.x, Game.player.y, "   enemy: ", Game.allEnemies[i].x, Game.allEnemies[i].y);
                 return true;}
         }
@@ -121,8 +124,9 @@ var Engine = (function(global) {
                     case 4: Game.player.escape=true; reset(); return;
                   }
                   Game.allPrizes.splice(i,1);
-                  
-             }
+
+                  return;  //if there is more that one prize on given (x, y) , player will pick only one
+               }
         }
 
         if (Game.player.y<1)
@@ -195,16 +199,17 @@ var Engine = (function(global) {
      * on your enemy and Game.player entities within app.js
      */
     function renderEntities() {
+        Game.allPrizes.forEach(function(prize) {
+            prize.render();
+        });
+
         /* Loop through all of the objects within the Game.allEnemies array and call
          * the render function you have defined.
          */
         Game.allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-        
-        Game.allPrizes.forEach(function(prize) {
-            prize.render();
-        });
+                
 
         Game.player.render();
     }
