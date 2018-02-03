@@ -1,6 +1,12 @@
 body {
     text-align: center;
-    max-width: 1024px;
+    max-width: 800px;
+    min-width: 600px;
+    margin: 0 auto;
+}
+
+canvas {
+    margin: 0 auto;
 }
 
 .game {
@@ -15,18 +21,16 @@ body {
 
 header h1 {
     color: rgb(24, 94, 45);
-    float: left;
+    overflow: hidden;
      text-align: center;
-     width: 75%;
+     margin-top: 0;
      margin-bottom: 0;
+     clear: right;
 }
 
-header h1 .rules {
+header  .rules {
     cursor: pointer;
-    font-weight: 400;
-    font-size: 1.5rem;
-    color: rgb(25, 48, 151);
-    margin-left: 2rem; 
+   
 }
 
 
@@ -34,11 +38,11 @@ header h2 {
     margin-bottom: 0;
 } 
 
-header::after {
+/*header::after {
 content: "";
 display: block;
 clear: both;
-}
+}*/
 
 section.rules.hide {
     display: none;
@@ -50,6 +54,7 @@ section.rules {
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
+    max-width: 700px;
     
     font-size: 1.5 rem;
     font-weight: 600;
@@ -81,6 +86,6 @@ section.rules img {
     vertical-align: bottom;
 }
 
-section.rules ul {
+section.rules ul li{
     list-style-type: none;
 }
