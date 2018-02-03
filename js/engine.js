@@ -125,12 +125,14 @@ var Engine = (function(global) {
                   }
                   Game.allPrizes.splice(i,1);
 
-                  return;  //if there is more that one prize on given (x, y) , player will pick only one
+                  return false;  //if there is more that one prize on given (x, y) , player will pick only one
                }
         }
 
         if (Game.player.y<1)
           return true;  //in water and not escape
+
+        return false;
     }
 
     /* This is called by the update function and loops through all of the
