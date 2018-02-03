@@ -6,8 +6,34 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <header>
+        <h1>Frogger <span class="rules">rules </span></h1>
+        <h2 class="game life"><span>Life</span><br><span class="val"></span></h2> 
+        <h2 class="game score"><span>Score</span><br><span class="val"></span></h2>
+    </header>
+    <section class="rules hide">
+    <div class="close"><span>&times;</span></div>
+    <div class="wrapper">
+     <p>Use arrow keys to move a girl</p>
+     <p>Don't touch bugs <img src="images/enemy-bug.png" width="20px" alt="Selector"> and water <img src="images/water-block.png" width="20px" alt="Selector">, cause you will die.</p>
+    
+     <p>Сollect prizes: 
+         <ul>
+             <li><img src="images/Gem Blue.png" width="20px" alt="Gem Blue"> <span> + 10 points</span></li>
+             <li><img src="images/Gem Green.png" width="20px" alt="Gem Green"> <span> + 20 points</span></li>
+             <li><img src="images/Gem Orange.png" width="20px" alt="Gem Orange"> <span> + 30 points</span></li>
+             <li><img src="images/Star.png" width="20px" alt="Star"> <span> + 50 points</span></li>
+             <li><img src="images/Heart.png" width="20px" alt="Heart"> <span> + 50 points + 1 life</span></li>
+         </ul>
+     </p>
+     <p>After the Level score is  greater that 250 points a  key <img src="images/Key.png" width="20px" alt="Key"> will appear. <br>
+        Pick a key, so that a door <img src="images/Selector.png" width="20px" alt="Selector"> to the next level will appear.  Exit through the door.</p>
+   
+    </div>
+    </section>
     <script src="js/resources.js"></script>
-    <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
+    <script src="js/app.js"></script>
+    
 </body>
 </html>

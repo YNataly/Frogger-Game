@@ -1,10 +1,10 @@
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
  * draws the initial game board on the screen, and then calls the update and
- * render methods on your player and enemy objects (defined in your app.js).
+ * render methods on your Game.player and enemy objects (defined in your app.js).
  *
  * A game engine works by drawing the entire game screen over and over, kind of
- * like a flipbook you may have created as a kid. When your player moves across
+ * like a flipbook you may have created as a kid. When your Game.player moves across
  * the screen, it may look like just that image/character is moving or being
  * drawn but that is not the case. What's really happening is the entire "scene"
  * is being drawn over and over, presenting the illusion of animation.
@@ -23,10 +23,28 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         lastTime;
+        var canvasInfo={
+            rowSize: 90,
+            colSize: 50,
+            numRows: 8,
+            numCols: 12
+            
+             };
+        canvasInfo.vtransp= Math.round(50*canvasInfo.rowSize/171);    
+        canvasInfo.imgHeight= Math.round((171-40)/171*canvasInfo.rowSize)-canvasInfo.vtransp;
+       
+        
+       // var numRows = 8;
+       // var numCols = 12;
 
-    canvas.width = 505;
-    canvas.height = 606;
+    canvas.width = canvasInfo.numCols*canvasInfo.colSize;
+    canvas.height = canvasInfo.numRows*canvasInfo.imgHeight+canvasInfo.vtransp;//canvasInfo.imgHeight+canvasInfo.vtransp+3;
     doc.body.appendChild(canvas);
+    canvasInfo.scoreEl=document.querySelector(".game.score .val");
+    canvasInfo.lifeEl=document.querySelector(".game.life .val");
+
+
+   
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -63,7 +81,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        //reset();
         lastTime = Date.now();
         main();
     }
@@ -79,21 +97,50 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        if (checkCollisions())
+           reset();
+    }
+
+    function  checkCollisions() {
+        for(var i=0; i<Game.allEnemies.length; i++) {
+            if (Math.abs(Game.player.x-Game.allEnemies[i].x)<0.9 && Math.abs(Game.player.y-Game.allEnemies[i].y)<0.9){
+                //console.log("Game.player: ", Game.player.x, Game.player.y, "   enemy: ", Game.allEnemies[i].x, Game.allEnemies[i].y);
+                return true;}
+        }
+
+        //check prizes
+        for (var i=Game.allPrizes.length-1; i>-1; i--) {
+            if(Math.abs(Game.player.x-Game.allPrizes[i].x) < 0.9 && Math.abs(Game.player.y-Game.allPrizes[i].y) < 0.9) {
+                //console.log("Game.player: ", Game.player.x, Game.player.y, "   prize: ", Game.allPrizes[i].x, Game.allPrizes[i].y, JSON.stringify(Game.allPrizes[i].info));
+                Game.player.score+=Game.allPrizes[i].info.value;
+                Game.player.levelScore+=Game.allPrizes[i].info.value;
+                
+                switch (Game.allPrizes[i].info.type){
+                    case 2: Game.player.life++; break;
+                    case 3:  Game.player.hasKey=true; Prize.createDoor(); break;
+                    case 4: Game.player.escape=true; reset(); return;
+                  }
+                  Game.allPrizes.splice(i,1);
+                  
+             }
+        }
+
+        if (Game.player.y<1)
+          return true;  //in water and not escape
     }
 
     /* This is called by the update function and loops through all of the
-     * objects within your allEnemies array as defined in app.js and calls
+     * objects within your Game.allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
-     * player object. These update methods should focus purely on updating
+     * Game.player object. These update methods should focus purely on updating
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        Game.allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        Game.player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -111,12 +158,14 @@ var Engine = (function(global) {
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
+                'images/stone-block.png',   // Row 3 of 3 of stone
+                'images/stone-block.png',   // Row 3 of 3 of stone
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
-            numCols = 5,
-            row, col;
+            ];
+           
+           var row, col;
+           
         
         // Before drawing, clear existing canvas
         ctx.clearRect(0,0,canvas.width,canvas.height)
@@ -125,8 +174,8 @@ var Engine = (function(global) {
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
+        for (row = 0; row < canvasInfo.numRows; row++) {   
+            for (col = 0; col < canvasInfo.numCols; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
                  * to start drawing and the y coordinate to start drawing.
@@ -134,7 +183,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * canvasInfo.colSize, row * canvasInfo.imgHeight, canvasInfo.colSize, canvasInfo.rowSize);
             }
         }
 
@@ -143,25 +192,44 @@ var Engine = (function(global) {
 
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
-     * on your enemy and player entities within app.js
+     * on your enemy and Game.player entities within app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
+        /* Loop through all of the objects within the Game.allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
+        Game.allEnemies.forEach(function(enemy) {
             enemy.render();
         });
+        
+        Game.allPrizes.forEach(function(prize) {
+            prize.render();
+        });
 
-        player.render();
+        Game.player.render();
     }
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
      * those sorts of things. It's only called once by the init() method.
      */
+    
     function reset() {
-        // noop
+        if(Game.player.hasKey && Game.player.escape){
+          Game.player.score+=250;
+          Game.player.levelScore=0;
+        }
+        else if (Game.player.life>1) {
+            Game.player.life--;
+            Game.player.levelScore-=100;
+            Game.player.score-=100;
+        }
+        else {Game.player.score=0;
+            Game.player.levelScore=0;
+        }
+
+        Game.init();
+        init();   
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -173,7 +241,16 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-pink-girl.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png',
+        'images/Star.png',
+        'images/Heart.png',
+        'images/Key.png',
+        'images/Selector.png'
+
     ]);
     Resources.onReady(init);
 
@@ -182,4 +259,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    return canvasInfo;
 })(this);

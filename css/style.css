@@ -1,3 +1,86 @@
 body {
     text-align: center;
+    max-width: 1024px;
+}
+
+.game {
+    float: right;
+    margin-right: 2em;
+    color: rgb(20, 20, 201);
+}
+
+.game .val{
+        color: rgb(25, 48, 151);
+}
+
+header h1 {
+    color: rgb(24, 94, 45);
+    float: left;
+     text-align: center;
+     width: 75%;
+     margin-bottom: 0;
+}
+
+header h1 .rules {
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: rgb(25, 48, 151);
+    margin-left: 2rem; 
+}
+
+
+header h2 {
+    margin-bottom: 0;
+} 
+
+header::after {
+content: "";
+display: block;
+clear: both;
+}
+
+section.rules.hide {
+    display: none;
+}
+
+section.rules {
+    position: absolute;
+    top: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    
+    font-size: 1.5 rem;
+    font-weight: 600;
+    font-family: Helvetica, Arial,  sans-serif;
+    background-color: rgb(165, 165, 165);
+    border: 1px solid rgb(120,120,120);
+    border-radius: 20px;
+    box-shadow: 2px 2px 4px rgba(80,80,80,0.7);
+}
+
+section.rules .close {
+    text-align: right;
+    
+
+}
+
+section.rules .close span {
+    font-size: 2.5rem;
+    margin: 0.75rem;
+    cursor: pointer;
+}
+
+section.rules .wrapper {
+    margin-top: -2rem;
+    padding: 1.5rem;
+}
+
+section.rules img {
+    vertical-align: bottom;
+}
+
+section.rules ul {
+    list-style-type: none;
 }
